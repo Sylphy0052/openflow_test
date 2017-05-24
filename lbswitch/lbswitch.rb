@@ -52,7 +52,7 @@ class LoadBalancer < Controller
         action1 =
         [
             SetEthSrcAddr.new(PM1_MAC),
-            SetIpSrcAddr.new(PM1),
+            SetIpSrcAddr.new(PM1_IP),
             SendOutPort.new(HOST_PORT)
         ]
         send_flow_mod_add(
@@ -73,7 +73,7 @@ class LoadBalancer < Controller
         if dstip == HOST_IP && !(@ipcache.index(srcip))
             @ipcache << srcip
             puts ""
-            puts "未知のIPアドレス(#{{srcip}})からServer宛てのパケットがきました"
+            puts "未知のIPアドレス(#{srcip})からServer宛てのパケットがきました"
             loadbalance switchid, message
         end
     end
@@ -82,7 +82,7 @@ class LoadBalancer < Controller
     def flow_removed(switchid, message)
         delip = message.match.nw_src.to_s
         puts ""
-        puts "#{{delip}}のエントリが削除されました"
+        puts "#{delip}のエントリが削除されました"
         @ipcache -= [delip]
     end
 
