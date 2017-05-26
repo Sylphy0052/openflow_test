@@ -9,7 +9,7 @@
 
 class LoadBalancer < Controller
 
-    HOST_IP = "192.168.3.50"
+    HOST_IP = "192.168.3.48"
     PM1_IP = "192.10.1.10"
     PM2_IP = "192.10.2.10"
     HOST_MAC = "a4:5e:60:e4:3a:b9"
