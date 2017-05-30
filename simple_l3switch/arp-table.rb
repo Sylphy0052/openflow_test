@@ -19,7 +19,6 @@
 
 
 class ARPEntry
-  include Trema::Logger
 
   attr_reader :port
   attr_reader :hwaddr
@@ -52,7 +51,6 @@ end
 
 
 class ARPTable
-  include Trema::Logger
 
   DEFAULT_AGE_MAX = 300
 
