@@ -31,7 +31,7 @@ class SimpleL3Switch < Controller
 
 
   def start
-    info "[SimpleL3Switch::start]"
+    puts "[SimpleL3Switch::start]"
 
     @arp_table = ARPTable.new
     @switches = []
@@ -49,7 +49,7 @@ class SimpleL3Switch < Controller
 
 
   def features_reply(datapath_id, message)
-    info "[SimpleL3Switch::features_reply] Datapath ID: #{ datapath_id.to_hex }"
+    puts "[SimpleL3Switch::features_reply] Datapath ID: #{ datapath_id.to_hex }"
 
     @port_name_of = {}
     @port_number_of = {}
@@ -66,7 +66,7 @@ class SimpleL3Switch < Controller
 
   def packet_in(datapath_id, message)
     puts "---------"
-    info "[SimpleL3Switch::packet_in]"
+     "[SimpleL3Switch::packet_in]"
 
     if to_me?(message)
       if message.arp_request?
@@ -86,19 +86,19 @@ class SimpleL3Switch < Controller
 
 
   def switch_ready(datapath_id)
-    info "[SimpleL3Switch::switch_ready]"
+    puts "[SimpleL3Switch::switch_ready]"
 
     @switches << datapath_id.to_hex
-    info "switch_readh: Switch #{ datapath_id.to_hex } is UP"
+    puts "switch_readh: Switch #{ datapath_id.to_hex } is UP"
     send_message datapath_id, FeaturesRequest.new
   end
 
 
   def switch_disconnected(datapath_id)
-    info "[SimpleL3Switch::switch_disconnected]"
+    puts "[SimpleL3Switch::switch_disconnected]"
 
     @switches -= [datapath_id.to_hex]
-    info "switch_disconnected: Switch #{ datapath_id.to_hex } is DOWN"
+    puts "switch_disconnected: Switch #{ datapath_id.to_hex } is DOWN"
   end
 
 
@@ -106,14 +106,14 @@ class SimpleL3Switch < Controller
 
 
   def handle_arp_request(dpid, message)
-    info "[SimpleL3Switch::handle_arp_request]"
+    puts "[SimpleL3Switch::handle_arp_request]"
 
     port = message.in_port
     daddr = message.arp_tpa
     interface = @interfaces.find_by_ipaddr(daddr)
 
     if interface
-      info "handle_arp_request: port:#{ port }, daddr:#{ daddr }, interface:#{ interface.segment }"
+      puts "handle_arp_request: port:#{ port }, daddr:#{ daddr }, interface:#{ interface.segment }"
       arp_reply = create_arp_reply_from message, interface.hwaddr
       packet_out dpid, arp_reply, SendOutPort.new(port)
     else
@@ -123,13 +123,13 @@ class SimpleL3Switch < Controller
 
 
   def handle_arp_reply(message)
-    info "[SimpleL3Switch::handle_arp_reply]"
+    puts "[SimpleL3Switch::handle_arp_reply]"
     @arp_table.update message.in_port, message.arp_spa, message.arp_sha
   end
 
 
   def handle_ipv4(dpid, message)
-    info "[SimpleL3Switch::handle_ipv4]"
+    puts "[SimpleL3Switch::handle_ipv4]"
 
     if should_forward?(message)
       forward dpid, message
@@ -142,13 +142,13 @@ class SimpleL3Switch < Controller
 
 
   def should_forward?(message)
-    info "[SimpleL3Switch::should_forward?]"
+    puts "[SimpleL3Switch::should_forward?]"
     not @interfaces.find_by_ipaddr(message.ipv4_daddr)
   end
 
 
   def handle_icmpv4_echo_request(dpid, message)
-    info "[SimpleL3Switch::handle_icmpv4_echo_request]"
+    puts "[SimpleL3Switch::handle_icmpv4_echo_request]"
 
     interface = @interfaces.find_by_hwaddr(message.macda)
     saddr = message.ipv4_saddr.value
@@ -163,13 +163,13 @@ class SimpleL3Switch < Controller
 
 
   def forward(dpid, message)
-    info "[SimpleL3Switch::forward]"
+    puts "[SimpleL3Switch::forward]"
 
     next_hop = resolve_next_hop(message.ipv4_daddr)
 
     interface = @interfaces.find_by_prefix(next_hop)
     if not interface
-      info "forward: not found interface for #{ next_hop }"
+      puts "forward: not found interface for #{ next_hop }"
       return
     end
     puts "forward: nexthop:#{ next_hop.to_s }, interface:#{ interface.segment }"
@@ -203,7 +203,7 @@ class SimpleL3Switch < Controller
 
 
   def handle_unresolved_packet(dpid, message, interface, ipaddr)
-    info "[SimpleL3Switch::handle_unresolved_packet]"
+    puts "[SimpleL3Switch::handle_unresolved_packet]"
 
     arp_request = create_arp_request_from interface, ipaddr
     flood_to_segment dpid, arp_request, interface.segment
@@ -211,7 +211,7 @@ class SimpleL3Switch < Controller
 
 
   def create_action_from(macsa, macda, port)
-    info "[SimpleL3Switch::create_action_from]: #{ macsa }->#{ macda } (#{ @port_name_of[port] })"
+    puts "[SimpleL3Switch::create_action_from]: #{ macsa }->#{ macda } (#{ @port_name_of[port] })"
     [
       SetEthSrcAddr.new(macsa.to_s),
       SetEthDstAddr.new(macda.to_s),
@@ -221,7 +221,7 @@ class SimpleL3Switch < Controller
 
 
   def handle_switched_traffic(datapath_id, message)
-    info "[SimpleL3Switch::handle_switched_traffic]"
+    puts "[SimpleL3Switch::handle_switched_traffic]"
 
     if message.arp?
       @arp_table.update message.in_port, message.arp_spa, message.arp_sha
@@ -262,7 +262,7 @@ class SimpleL3Switch < Controller
 
 
   def flow_mod(datapath_id, message, action)
-    info "[SimpleL3Switch::flow_mod]"
+    puts "[SimpleL3Switch::flow_mod]"
 
     send_flow_mod_add(
       datapath_id,
@@ -273,7 +273,7 @@ class SimpleL3Switch < Controller
 
 
   def packet_out(datapath_id, packet, action)
-    info "[SimpleL3Switch::packet_out]"
+    puts "[SimpleL3Switch::packet_out]"
 
     send_packet_out(
       datapath_id,
@@ -284,7 +284,7 @@ class SimpleL3Switch < Controller
   end
 
   def flood_to_segment(datapath_id, data, segment_name, in_port = nil)
-    info "[SimpleL3Switch::flood_to_segment]"
+    puts "[SimpleL3Switch::flood_to_segment]"
 
     if segment_name
       port_names = @segments.port_name_list_of(segment_name).dup
@@ -305,7 +305,7 @@ class SimpleL3Switch < Controller
         :zero_padding => true
       )
     else
-      info "SimpleL3Switch: not found a segment that has port:#{ in_port }"
+      puts "SimpleL3Switch: not found a segment that has port:#{ in_port }"
     end
   end
 

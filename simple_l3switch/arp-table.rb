@@ -30,7 +30,7 @@ class ARPEntry
     @hwaddr = hwaddr
     @age_max = age_max
     @last_updated = Time.now
-    info "[ARPEntry::initialize] New entry: MAC addr=#{ @hwaddr.to_s }, port=#{ @port }"
+    puts "[ARPEntry::initialize] New entry: MAC addr=#{ @hwaddr.to_s }, port=#{ @port }"
   end
 
 
@@ -38,13 +38,13 @@ class ARPEntry
     @port = port
     @hwaddr = hwaddr
     @last_updated = Time.now
-    info "[ARPEntry::update] Update entry: MAC addr=#{ @hwaddr.to_s }, port=#{ @port }"
+    puts "[ARPEntry::update] Update entry: MAC addr=#{ @hwaddr.to_s }, port=#{ @port }"
   end
 
 
   def aged_out?
     aged_out = Time.now - @last_updated > @age_max
-    info "[ARPEntry::aged_out?] Age out: An ARP entry (MAC address = #{ @hwaddr.to_s }, port number = #{ @port }) has been aged-out" if aged_out
+    puts "[ARPEntry::aged_out?] Age out: An ARP entry (MAC address = #{ @hwaddr.to_s }, port number = #{ @port }) has been aged-out" if aged_out
     aged_out
   end
 end
@@ -55,13 +55,13 @@ class ARPTable
   DEFAULT_AGE_MAX = 300
 
   def initialize
-    info "[ARPTable::initialize]"
+    puts "[ARPTable::initialize]"
     @db = {}
   end
 
 
   def update(port, ipaddr, hwaddr)
-    info "[ARPTable::update] port=#{ port }, ipaddr=#{ ipaddr.to_s }, hwaddr=#{ hwaddr.to_s }"
+    puts "[ARPTable::update] port=#{ port }, ipaddr=#{ ipaddr.to_s }, hwaddr=#{ hwaddr.to_s }"
 
     entry = @db[ipaddr.to_s]
     if entry
