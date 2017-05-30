@@ -16,7 +16,6 @@
 #
 
 class Segments
-  include Trema::Logger
 
   def initialize(segments)
     @db = {}
