@@ -9,15 +9,15 @@
 
 class LoadBalancer < Controller
 
-    HOST_IP = "192.168.3.50"
+    HOST_IP = "192.168.1.229"
     PM1_IP = "192.10.1.10"
-    PM2_IP = "192.10.2.10"
-    HOST_MAC = "a4:5e:60:e4:3a:b9"
-    PM1_MAC = "b8:27:eb:47:8e:ed"
-    PM2_MAC = "b8:27:eb:22:e2:9f"
-    HOST_PORT = 1
-    PM1_PORT = 2
-    PM2_PORT = 3
+    PM2_IP = "192.20.1.10"
+    HOST_MAC = "b8:27:eb:18:7f:2c"
+    PM1_MAC = "00:22:cf:f9:4a:e9"
+    PM2_MAC = "00:22:cf:f9:4d:5b"
+    HOST_PORT = 3
+    PM1_PORT = 1
+    PM2_PORT = 2
 
     IPv4 = 0x8000
     ARP = 0x0806
