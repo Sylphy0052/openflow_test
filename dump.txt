@@ -1,0 +1,4 @@
+NXST_FLOW reply (xid=0x4):
+ cookie=0x1, duration=357.135s, table=0, n_packets=244, n_bytes=14640, idle_age=1, priority=65535,arp actions=FLOOD
+ cookie=0x3, duration=357.134s, table=0, n_packets=0, n_bytes=0, idle_age=357, priority=65522,dl_type=0x8000 actions=mod_dl_src:00:22:cf:f9:4a:e9,mod_nw_src:192.10.1.10,output:3
+ cookie=0x5, duration=292.497s, table=0, n_packets=0, n_bytes=0, idle_timeout=300, idle_age=292, priority=65521,dl_type=0x8000 actions=mod_dl_dst:00:22:cf:f9:4d:5b,mod_nw_dst:192.20.1.10,output:2
