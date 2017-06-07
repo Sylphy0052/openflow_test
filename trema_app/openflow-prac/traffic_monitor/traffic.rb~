@@ -1,0 +1,20 @@
+#!/usr/bin/ruby
+
+require "active_record"
+require "gli"
+include GLI::App
+
+program_desc "Traffic Monitor - get traffic amount"
+version 1.0
+subcommand_option_handling :normal
+
+module Traffic
+  
+  command :get_most_host do |c|
+    c.desc 'most send data host'
+    c.action do |_global_options, _options, _args|
+      
+  
+end
+exit run(ARGV)
+  

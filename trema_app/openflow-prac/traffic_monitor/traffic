@@ -1,0 +1,45 @@
+#!/usr/bin/ruby
+
+require "active_record"
+require "gli"
+include GLI::App
+
+ActiveRecord::Base.establish_connection(
+  "adapter" => "sqlite3",
+  "database" =>"./traffic.db"
+)
+
+class Mac_traffic < ActiveRecord::Base
+  self.table_name = 'mac_traffics'
+end
+class Switch_traffic < ActiveRecord::Base
+  self.table_name = 'switch_traffics'
+end
+
+
+program_desc "Traffic Monitor : get traffic amount and addresses"
+version 1.0
+subcommand_option_handling :normal
+
+desc "return ip address or mac"
+command :get_most_host do |c|
+  c.desc 'most send data host'
+  c.action do |_global_options, _options, _args|
+    result = Mac_traffic.order("byte desc").limit(1)
+    puts result.first.mac
+  end
+end
+
+
+desc "return switch datapath id"
+command :get_most_switch do |c|
+  c.desc 'most send data switch'
+  c.action do |_global_options, _options, _args|
+    result = Switch_traffic.order("byte desc").limit(1)
+    puts result.first.datapath_id
+  end
+end
+
+
+exit run(ARGV)
+  

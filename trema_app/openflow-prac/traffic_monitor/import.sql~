@@ -1,0 +1,12 @@
+create table mac_traffics (
+       mac text primary key,
+       datapath_id text,
+       packet integer,
+       byte integer
+       );
+
+create table switch_traffics(
+       datapath_id integer primary key,
+       packet integer,
+       byte integer
+       );

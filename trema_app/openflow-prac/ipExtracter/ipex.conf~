@@ -1,0 +1,15 @@
+vswitch("swtich0") {
+   datapath_id "0x1"
+   ip "192.168.83.156"
+ }
+ vhost("host1") {
+   ip "192.168.0.1"
+   netmask "255.255.255.0"
+ }
+ vhost("host2") {
+   ip "192.168.0.2"
+   netmask "255.255.255.0"
+ }
+ 
+ link "host1", "switch0"
+ link "host2", "switch0"

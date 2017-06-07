@@ -1,0 +1,36 @@
+require "fdb"
+
+class IpExtracter < Controller
+
+	def start
+          @fdb = FDB.new
+          @checkip=Pio::IPv4Address.new("0.0.0.0")
+          p @checkip
+  	end
+
+        def switch_ready datapath_ip
+          p "switch ready"
+        end
+
+  	def packet_in datapath_id, packet_in
+          macsa = packet_in.macsa#source_mac_address
+          macda = packet_in.macda#destination_mac_address
+          ipsa = packet_in.ipv4_saddr#ipv4_source_address
+          ipda = packet_in.ipv4_daddr#ipv4_destination_address
+          p "------------"
+          p ipsa.class
+          p "------------"
+          
+          if !ipsa.nil? && "0.0.0.0" != ipsa.to_s then
+            puts "----macsa----"
+            p macsa
+            p "----macda----"
+            p macda
+            p "----ipsa----"
+            p ipsa
+            #          p "----ipda----"
+            #          puts ipda
+          end
+    end
+
+end

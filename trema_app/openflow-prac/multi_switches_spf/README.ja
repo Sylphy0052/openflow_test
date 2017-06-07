@@ -1,0 +1,57 @@
+# -*- coding: utf-8 -*-
+ディレクトリの中身の説明
+
+
+trema_topology.txt
+普段の実験環境を図示したもの
+
+
+
+common/
+共通ライブラリ。
+lldp.cはなんちゃってLLDPフレームを生成してOpenflowスイッチへpacket_outするRubyクラスをTremaに追加する。
+1　~/trema-trema-8e97343/ruby/trema/lldp.c　にコピーする。
+2　~/trema-trema-8e97343/ruby/trema/trema.cにInit_LLDP();を追加する。
+3　~/trema-trema-8e97343/ruby/Makefileにlldp.cを追加する。
+4　cd ~/trema-trema-8e97343/ruby/　してmake
+
+lldp.cの制限事項
+1 完全なLLDPフレームを生成できない。TLVとしてポートIDやリンクコスト、送信元datapath_idを入れるべきだが入れていない。
+OpenFlowスイッチに実装する機能である（？）ため、コントローラでは解決できない。現在は送信元となるdatapathのdatapath_idをフレームの中に
+つっこんで、それを読み出しているだけ。
+2 LLDPフレームのソースMACアドレスとしてdatapath_idの下位48ビットを使うので、MACアドレスが重複するdatapathが出てくる可能性がある。
+重複したときの動作は考慮していない。（多分問題ないと思う。）
+3 1により、リンク識別の向きが本来とは逆。ペイロードから相手のポートIDが取り出せないので、受信したポートIDを使っている。
+
+arp.cはARPリクエストとリプライを送信するクラス。
+lldp.cと同じ方法でTremaに追加する。こちらを参考にした。感謝。
+http://d.hatena.ne.jp/yoshifumi1975/20091118/p1
+
+
+
+calc_spf_djikstra/
+テストプログラムでなのでメンテしてないので、今は動かないかも。
+トポロジを把握して2つのスイッチ間の最短経路を計算するプログラム。
+routing_switchのためのテストプログラム。
+lldp.cを追加しておくこと。
+lldp.rbは改良して../common/topology.rbにした。
+
+learning_switch/
+テストプログラムでなのでメンテしてないので、今は動かないかも。
+ソースIPアドレスを変更する方法を学ぶために書いた。
+TremaのサンプルのディレクトリをそのままコピーしたのでCソースは不要。
+arp.cを追加しておくこと。
+
+
+routing_switch/
+Trema本家サンプルプログラムのrouting_switchのRuby版に当たる。
+サンプルはCだけだったのでRuby版が欲しかった。lldp.cを追加しておくこと。
+
+制限事項
+1 lldp.cの制限事項のため、リンクコストは真の値ではない。
+
+
+
+ layer3_switch/
+L3スイッチをエミュレートするコントローラ。arp.cを追加しておくこと。
+L3スイッチの基本動作を実装してみた。arp.cの使い方はこれを参照。

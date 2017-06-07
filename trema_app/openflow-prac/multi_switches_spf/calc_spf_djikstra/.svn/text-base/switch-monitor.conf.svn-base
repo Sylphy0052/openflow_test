@@ -1,0 +1,53 @@
+vswitch ( "sw0" ) {
+  datapath_id "0xe0"
+}
+
+vswitch ( "sw1" ) {
+  datapath_id "0xe1"
+}
+
+vswitch ( "sw2" ) {
+  datapath_id "0xe2"
+}
+
+vswitch ( "sw3" ) {
+  datapath_id "0xe3"
+}
+
+vswitch ( "sw4" ) {
+  datapath_id "0xe4"
+}
+
+vswitch ( "sw5" ) {
+  datapath_id "0xe5"
+}
+
+vswitch ( "sw6" ) {
+  datapath_id "0xe6"
+}
+
+vswitch ( "sw7" ) {
+  datapath_id "0xe7"
+}
+
+
+link "sw0", "sw1"
+link "sw0", "sw4"
+link "sw0", "sw6"
+
+link "sw1", "sw3"
+link "sw1", "sw5"
+link "sw1", "sw4"
+
+link "sw2", "sw6"
+link "sw2", "sw3"
+link "sw2", "sw4"
+link "sw2", "sw5"
+
+link "sw6", "sw3"
+
+link "sw7", "sw2"
+link "sw7", "sw6"
+link "sw7", "sw4"
+link "sw7", "sw3"
+
