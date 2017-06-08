@@ -1,14 +1,5 @@
 class Clone < Controller
 
-    @pm1_mac = "b8:27:eb:47:8e:ed"
-    @pm2_mac = "b8:27:eb:22:e2:9f"
-    @pm1_ip = "192.10.1.10"
-    @pm2_ip = "192.20.1.10"
-    @pm1_port = 3
-    @pm2_port = 4
-    @port = 1
-
-
     def start
         puts "trema clone start."
         # puts "clone from #{ARGV[0]} to #{ARGV[1]}"
@@ -16,6 +7,13 @@ class Clone < Controller
         @toip = ARGV[1]
         @flag = 0
         @ipcache = []
+        @pm1_mac = "b8:27:eb:47:8e:ed"
+        @pm2_mac = "b8:27:eb:22:e2:9f"
+        @pm1_ip = "192.10.1.10"
+        @pm2_ip = "192.20.1.10"
+        @pm1_port = 3
+        @pm2_port = 4
+        @port = 1
     end
 
     def switch_ready datapath_id
