@@ -31,14 +31,14 @@ class Clone < Controller
             :match => Match.new(
                 :dl_type => 0x0800 ,
                 :nw_src => @pm1_ip ),
-            :actions => SendOutPort.new( 1 )
+            :actions => SendOutPort.new( @port )
         )
         # 192.20.1.10から来たパケットの転送元を書き換えて1番ポートに転送
         action1 =
         [
             SetEthSrcAddr.new( @pm1_mac ),
             SetIpSrcAddr.new( @pm1_ip ),
-            SendOutPort.new( 1 )
+            SendOutPort.new( @port )
         ]
         send_flow_mod_add(
             datapath_id,
@@ -51,6 +51,23 @@ class Clone < Controller
 
     # 宛先が192.10.1.10なら負荷分散処理
     def packet_in datapath_id, message
+        
+        macsa = packet_in.macsa#source_mac_address
+        macda = packet_in.macda#destination_mac_address
+        ipsa = packet_in.ipv4_saddr#ipv4_source_address
+        ipda = packet_in.ipv4_daddr#ipv4_destination_address
+
+
+        if !ipsa.nil? && "0.0.0.0" != ipsa.to_s then
+          puts "----------------------"
+          puts "macsa : #{macsa}"
+          puts "macda : #{macda}"
+          puts "ipsa : #{ipsa.to_s}"
+          puts "ipda : #{ipda.to_s}"
+          puts "----------------------"
+
+        end
+
         srcip = message.ipv4_saddr.to_s
         dstip = message.ipv4_daddr.to_s
         if dstip == @pm1_ip && !(@ipcache.index( srcip ))
