@@ -26,7 +26,7 @@ class Test < Controller
     @targetip
     @srcip = "192.168.1.100"
     @dstip = "10.5.10.5"
-    @setflag = 0 # 1 = migration / 2 = clone 
+    @setflag = 0 # 1 = migration / 2 = clone
   end
 
   def switch_ready datapath_id
@@ -55,7 +55,7 @@ class Test < Controller
     result = Migration.first
     if !result.null?
       flow_mod_migration result.source_ip result.destination_ip
-      
+
     end
   end
 
@@ -64,7 +64,7 @@ class Test < Controller
     @flag = 2
     @srcip = srcip
     @dstip = dstip
-    send_message(@RootSwitch, FlowStatsRequest.new(:match => Match.new()))   
+    send_message(@RootSwitch, FlowStatsRequest.new(:match => Match.new()))
   end
 
   def flow_mod_migration srcip, dstip
@@ -82,7 +82,7 @@ class Test < Controller
           split = each.match.to_s.split("nw_dst = ")
           nw_dst = split[1].split(",",2)
           range = IPAddr.new(nw_dst[0])
- #-------------------Migration ------------------------                   
+ #-------------------Migration ------------------------
           if @flag == 1
             if range.include?(IPAddr.new(@srcip))
               if !range.include?(IPAddr.new(@dstip))
@@ -104,8 +104,8 @@ class Test < Controller
                    SetIpSrcAddr.new( @srcip ),
                    SendOutPort.new( 3 )
                   ]
-                
-                #back packet from migration vm to cli 
+
+                #back packet from migration vm to cli
                 send_flow_mod_add(
                                   @RootSwitch,
                                   :match => Match.new(:dl_type => 0x0800 ,
@@ -114,7 +114,7 @@ class Test < Controller
                                   )
               end
             end
-     
+
             if range.include?(IPAddr.new(@dstip))
               if !range.include?(IPAddr.new(@srcip))
                 each.actions.each do |action|
@@ -136,8 +136,8 @@ class Test < Controller
                 end
               end
             end
-  #------------------------Clone-------------------------  
-          elsif @flag == 2 # clone 
+  #------------------------Clone-------------------------
+          elsif @flag == 2 # clone
             if range.include?(IPAddr.new(@srcip))
               puts "clone hit"
               send_flow_mod_delete(
@@ -167,14 +167,12 @@ class Test < Controller
 
   def packet_in datapath_id, packet_in
     
-
-
     macsa = packet_in.macsa#source_mac_address
     macda = packet_in.macda#destination_mac_address
     ipsa = packet_in.ipv4_saddr#ipv4_source_address
     ipda = packet_in.ipv4_daddr#ipv4_destination_address
-    
-    
+
+
     if !ipsa.nil? && "0.0.0.0" != ipsa.to_s then
       puts "----------------------"
       puts "macsa : #{macsa}"
@@ -182,8 +180,8 @@ class Test < Controller
       puts "ipsa : #{ipsa.to_s}"
       puts "ipda : #{ipda.to_s}"
       puts "----------------------"
-      
+
     end
   end
-  
+
 end

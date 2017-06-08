@@ -10,7 +10,7 @@ class Miclone < Controller
         @dpid.push(datapath_id)
     end
 
-    def packet_in datapath_id, message
+    def packet_in datapath_id, packet_in
         macsa = packet_in.macsa#source_mac_address
         macda = packet_in.macda#destination_mac_address
         ipsa = packet_in.ipv4_saddr#ipv4_source_address
