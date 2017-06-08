@@ -34,13 +34,13 @@ class Clone < Controller
                 :dl_type => 0x0800 ,
                 :nw_src => @pm1_ip ),
             :actions => SendOutPort.new( @port )
-                          )
+        )
         # 192.20.1.10から来たパケットの転送元を書き換えて1番ポートに転送
         action1 =
         [
             SetEthSrcAddr.new( @pm1_mac ),
             SetIpSrcAddr.new( @pm1_ip ),
-            SendOutPort.new( 1 )
+            SendOutPort.new( @port )
         ]
         send_flow_mod_add(
             datapath_id,
