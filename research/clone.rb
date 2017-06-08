@@ -11,7 +11,7 @@ class Clone < Controller
 
     def start
         puts "trema clone start."
-        puts "clone from #{ARGV[0]} to #{ARGV[1]}"
+        # puts "clone from #{ARGV[0]} to #{ARGV[1]}"
         @fromip = ARGV[0]
         @toip = ARGV[1]
         @flag = 0
@@ -33,7 +33,7 @@ class Clone < Controller
             :match => Match.new(
                 :dl_type => 0x0800 ,
                 :nw_src => @pm1_ip ),
-            :actions => SendOutput.new( @port )
+            :actions => SendOutPort.new( @port )
                           )
         # 192.20.1.10から来たパケットの転送元を書き換えて1番ポートに転送
         action1 =
