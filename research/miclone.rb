@@ -7,6 +7,11 @@ class Miclone < Controller
 
     def switch_ready datapath_id
         puts "switch ready #{datapath_id.to_hex}"
+        send_flow_mod_add( #ARP = FLOOD
+                          datapath_id,
+                          :match => Match.new( :dl_type => 0x0806 ),
+                          :actions => SendOutPort.new( OFPP_FLOOD )
+                          )
         @dpid.push(datapath_id)
     end
 
