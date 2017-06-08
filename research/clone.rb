@@ -50,8 +50,8 @@ class Clone < Controller
     end
 
     # 宛先が192.10.1.10なら負荷分散処理
-    def packet_in datapath_id, message
-        
+    def packet_in datapath_id, packet_in
+
         macsa = packet_in.macsa#source_mac_address
         macda = packet_in.macda#destination_mac_address
         ipsa = packet_in.ipv4_saddr#ipv4_source_address
@@ -68,13 +68,13 @@ class Clone < Controller
 
         end
 
-        srcip = message.ipv4_saddr.to_s
-        dstip = message.ipv4_daddr.to_s
+        srcip = packet_in.ipv4_saddr.to_s
+        dstip = packet_in.ipv4_daddr.to_s
         if dstip == @pm1_ip && !(@ipcache.index( srcip ))
             @ipcache << srcip
             puts ""
             puts "Arrive packets From #{srcip} to #{dstip}"
-            loadbalance datapath_id, message
+            loadbalance datapath_id, packet_in
         end
     end
 
