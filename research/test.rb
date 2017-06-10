@@ -28,7 +28,7 @@ class Test < Controller
         if ipda == "192.10.1.10"
             puts "To 192.10.1.10"
             send_flow_mod_add(
-              switchid,
+              datapath_id,
               match: Match.new( ip_destination_address: "192.10.1.10" ),
               actions: SendOutPort.new( 3 ),
               priority: 0xfff2
@@ -43,7 +43,7 @@ class Test < Controller
         if ipda == "192.20.1.10"
             puts "To 192.20.1.10"
             send_flow_mod_add(
-              switchid,
+              datapath_id,
               match: Match.new( ip_destination_address: "192.20.1.10" ),
               actions: SendOutPort.new( 4 ),
               priority: 0xfff2
@@ -58,7 +58,7 @@ class Test < Controller
         if ipda == "192.168.3.2"
             puts "To 192.168.3.2"
             send_flow_mod_add(
-              switchid,
+              datapath_id,
               match: Match.new( ip_destination_address: "192.168.3.2" ),
               actions: SendOutPort.new( 1 ),
               priority: 0xfff2
