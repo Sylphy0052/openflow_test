@@ -100,6 +100,7 @@ class Clone < Controller
                 :data => message.data,
                 :actions => SendOutPort(OFPP_FLOOD)
             )
+        end
 
     end
 
