@@ -45,7 +45,7 @@ class Test < Controller
                       )
     send_flow_mod_add(
                       datapath_id,
-                      :match => Match.new( :dl_type => 0x0800 ,:nw_dst => "10.5.10.0/24"  ),
+                      :match => Match.new( :dl_type => 0x0800 ,:nw_dst => "10.1.10.0/24"  ),
                       :actions => ActionOutput.new( :port => 2 )
                       )
     flow_mod_clone @srcip ,@dstip
@@ -166,7 +166,7 @@ class Test < Controller
 
 
   def packet_in datapath_id, packet_in
-    
+
     macsa = packet_in.macsa#source_mac_address
     macda = packet_in.macda#destination_mac_address
     ipsa = packet_in.ipv4_saddr#ipv4_source_address
