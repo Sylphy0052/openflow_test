@@ -43,21 +43,27 @@ class Test < Controller
 
         if srcip == "192.10.1.10"
             puts "From 192.10.1.10"
+        end
 
         if dstip == "192.10.1.10"
             puts "To 192.10.1.10"
+        end
 
         if srcip == "192.20.1.10"
             puts "From 192.20.1.10"
+        end
 
         if dstip == "192.20.1.10"
             puts "To 192.20.1.10"
+        end
 
         if srcip == "192.168.3.2"
             puts "From 192.168.3.2"
+        end
 
         if dstip == "192.168.3.2"
             puts "To 192.168.3.2"
+        end
 
         if !ipsa.nil? && "0.0.0.0" != ipsa.to_s then
           puts "----------------------"
