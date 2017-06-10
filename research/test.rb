@@ -6,6 +6,11 @@ class Test < Controller
 
     def switch_ready datapath_id
         puts "switch connect #{datapath_id.to_hex}"
+        send_flow_mod_add(
+          switchid,
+          match:Match.new( dl_type: 0x0806 ),
+          actions: SendOutPort.new( OFPP_FLOOD )
+        )
     end
 
     # 宛先が192.10.1.10なら負荷分散処理
