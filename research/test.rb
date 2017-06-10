@@ -6,11 +6,11 @@ class Test < Controller
 
     def switch_ready datapath_id
         puts "switch connect #{datapath_id.to_hex}"
-        send_flow_mod_add(
-          datapath_id,
-          match:Match.new( dl_type: 0x0806 ),
-          actions: SendOutPort.new( OFPP_FLOOD )
-        )
+        # send_flow_mod_add(
+        #   datapath_id,
+        #   match:Match.new( dl_type: 0x0806 ),
+        #   actions: SendOutPort.new( OFPP_FLOOD )
+        # )
     end
 
     def packet_in datapath_id, packet_in
