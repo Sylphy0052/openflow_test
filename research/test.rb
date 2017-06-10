@@ -35,7 +35,7 @@ class Test < Controller
             )
             send_packet_out(
                 datapath_id,
-                data: message.data,
+                data: packet_in.data,
                 actions: SendOutPort.new( OFPP_FLOOD )
             )
         end
@@ -55,7 +55,7 @@ class Test < Controller
             )
             send_packet_out(
                 datapath_id,
-                data: message.data,
+                data: packet_in.data,
                 actions: SendOutPort.new( OFPP_FLOOD )
             )
         end
@@ -75,7 +75,7 @@ class Test < Controller
             )
             send_packet_out(
                 datapath_id,
-                data: message.data,
+                data: packet_in.data,
                 actions: SendOutPort.new( OFPP_FLOOD )
             )
         end
