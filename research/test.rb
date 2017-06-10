@@ -16,7 +16,6 @@ class Test < Controller
         ipsa = packet_in.ipv4_saddr#ipv4_source_address
         ipda = packet_in.ipv4_daddr#ipv4_destination_address
 
-
         if !ipsa.nil? && "0.0.0.0" != ipsa.to_s then
           puts "----------------------"
           puts "macsa : #{macsa}"
@@ -24,7 +23,6 @@ class Test < Controller
           puts "ipsa : #{ipsa.to_s}"
           puts "ipda : #{ipda.to_s}"
           puts "----------------------"
-
         end
     end
 end
