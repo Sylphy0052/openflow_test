@@ -29,7 +29,10 @@ class Test < Controller
             puts "To 192.10.1.10"
             send_flow_mod_add(
               datapath_id,
-              match: Match.new( ip_destination_address: "192.10.1.10" ),
+              match: Match.new(
+                dl_type: 0x0800,
+                ip_src: ipsa,
+                ip_dst: ipda ),
               actions: SendOutPort.new( OFPP_FLOOD ),
               priority: 0xfff2
             )
@@ -49,7 +52,10 @@ class Test < Controller
             puts "To 192.20.1.10"
             send_flow_mod_add(
               datapath_id,
-              match: Match.new( ip_destination_address: "192.20.1.10" ),
+              match: Match.new(
+                dl_type: 0x0800,
+                ip_src: ipsa,
+                ip_dst: ipda ),
               actions: SendOutPort.new( OFPP_FLOOD ),
               priority: 0xfff2
             )
@@ -69,7 +75,10 @@ class Test < Controller
             puts "To 192.168.3.2"
             send_flow_mod_add(
               datapath_id,
-              match: Match.new( ip_destination_address: "192.168.3.2" ),
+              match: Match.new(
+                dl_type: 0x0800,
+                ip_src: ipsa,
+                ip_dst: ipda ),
               actions: SendOutPort.new( OFPP_FLOOD ),
               priority: 0xfff2
             )
