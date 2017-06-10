@@ -11,9 +11,29 @@ class Test < Controller
           match:Match.new( dl_type: 0x0806 ),
           actions: SendOutPort.new( OFPP_FLOOD )
         )
+        send_flow_mod_add(
+          switchid,
+          match: Match.new( dl_type: 0x0800,
+                               nw_src: "192.168.3.2" ),
+          actions: SendOutPort.new( 1 ),
+          priority: 0xfff2
+        )
+        send_flow_mod_add(
+          switchid,
+          match: Match.new( dl_type: 0x0800,
+                               nw_src: "192.10.1.10"),
+          actions: SendOutPort.new( 3 ),
+          priority: 0xfff2
+        )
+        send_flow_mod_add(
+          switchid,
+          match: Match.new( dl_type: 0x0800,
+                               nw_src: "192.20.1.10"),
+          actions: SendOutPort.new( 4 ),
+          priority: 0xfff2
+        )
     end
 
-    # 宛先が192.10.1.10なら負荷分散処理
     def packet_in datapath_id, packet_in
 
         macsa = packet_in.macsa#source_mac_address
