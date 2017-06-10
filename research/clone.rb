@@ -8,6 +8,7 @@ class Clone < Controller
         @toip = ARGV[1]
         @flag = 0
         @ipcache = []
+        @mod_ip = []
         @pm1_mac = "b8:27:eb:47:8e:ed"
         @pm2_mac = "b8:27:eb:22:e2:9f"
         @pm1_ip = "192.10.1.10"
@@ -32,14 +33,14 @@ class Clone < Controller
             :match => Match.new(
                 :dl_type => 0x0800 ,
                 :nw_src => @pm1_ip ),
-            :actions => SendOutPort.new( @port )
+            :actions => SendOutPort.new( OFPP_FLOOD )
         )
         # 192.20.1.10から来たパケットの転送元を書き換えて1番ポートに転送
         action1 =
         [
             SetEthSrcAddr.new( @pm1_mac ),
             SetIpSrcAddr.new( @pm1_ip ),
-            SendOutPort.new( @port )
+            SendOutPort.new( OFPP_FLOOD )
         ]
         send_flow_mod_add(
             datapath_id,
@@ -77,6 +78,30 @@ class Clone < Controller
             puts "Arrive packets From #{srcip} to #{dstip}"
             loadbalance datapath_id, packet_in
         end
+
+        if @mod_ip.index(dstip)
+            puts ""
+            puts "return ModIp"
+            action3 = [
+                SetEthSrcAddr.new(@pm1_mac),
+                SetIpSrcAddr.new(@pm1_ip),
+                SendOutPort.new(OFPP_FLOOD)
+            ]
+            send_flow_mod_add(
+                datapath_id,
+                :match => Match.new(
+                    :dl_type => 0x0800,
+                    :nw_src => srcip
+                ),
+                :actions => action3
+            )
+            send_packet_out(
+                datapath_id,
+                :data => packet_in.data,
+                :actions => SendOutPort.new(OFPP_FLOOD)
+            )
+        end
+
     end
 
     # フローエントリー削除
@@ -99,14 +124,13 @@ class Clone < Controller
                     :dl_type => 0x0800,
                     :nw_src => message.ipv4_saddr
                 ),
-                :actions => SendOutPort.new( @pm1_port ),
-                :idle_timeout => 300
+                :actions => SendOutPort.new( OFPP_FLOOD )
             )
 
             send_packet_out(
                 datapath_id,
                 :data => message.data,
-                :actions => SendOutPort.new( @pm1_port )
+                :actions => SendOutPort.new( OFPP_FLOOD )
             )
             puts "Send to Server1 Registration to flow table"
             @flag = 1
@@ -115,7 +139,7 @@ class Clone < Controller
             action2 = [
                 SetEthDstAddr.new(@pm2_mac),
                 SetIpDstAddr.new(@pm2_ip),
-                SendOutPort.new(@pm2_port)
+                SendOutPort.new(OFPP_FLOOD)
             ]
             send_flow_mod_add(
                 datapath_id,
@@ -123,16 +147,16 @@ class Clone < Controller
                     :dl_type => 0x0800,
                     :nw_src => message.ipv4_saddr
                 ),
-                :actions => action2,
-                :idle_timeout => 300
+                :actions => action2
             )
             send_packet_out(
                 datapath_id,
                 :data => message.data,
-                :actions => action2
+                :actions => SendOutPort.new(OFPP_FLOOD)
             )
             puts "Send to Server2 Registration to flow table"
             @flag = 0
+            @mod_ip << message.ipv4_saddr
         end
     end
 end
