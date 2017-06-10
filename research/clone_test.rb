@@ -8,6 +8,7 @@ class Clone < Controller
         @toip = ARGV[1]
         @flag = 0
         @ipcache = []
+        @mod_ip = []
         @pm1_mac = "b8:27:eb:47:8e:ed"
         @pm2_mac = "b8:27:eb:22:e2:9f"
         @pm1_ip = "192.10.1.10"
@@ -77,6 +78,29 @@ class Clone < Controller
             puts "Arrive packets From #{srcip} to #{dstip}"
             loadbalance datapath_id, packet_in
         end
+
+        if @mod_ip.index(dstip)
+            puts ""
+            puts "return ModIp"
+            action3 = [
+                SetEthSrcAddr.new(@pm1_mac),
+                SetIpSrcAddr.new(@pm1_ip),
+                SendOutPort.new(OFPP_FLOOD)
+            ]
+            send_flow_mod_add(
+                datapath_id,
+                :match => Match.new(
+                    :dl_type => 0x0800,
+                    :nw_src => srcip
+                ),
+                :actions => action3
+            )
+            send_packet_out(
+                datapath_id,
+                :data => message.data,
+                :actions => SendOutPort(OFPP_FLOOD)
+            )
+
     end
 
     # フローエントリー削除
@@ -99,8 +123,7 @@ class Clone < Controller
                     :dl_type => 0x0800,
                     :nw_src => message.ipv4_saddr
                 ),
-                :actions => SendOutPort.new( OFPP_FLOOD ),
-                :idle_timeout => 300
+                :actions => SendOutPort.new( OFPP_FLOOD )
             )
 
             send_packet_out(
@@ -123,16 +146,16 @@ class Clone < Controller
                     :dl_type => 0x0800,
                     :nw_src => message.ipv4_saddr
                 ),
-                :actions => action2,
-                :idle_timeout => 300
+                :actions => action2
             )
             send_packet_out(
                 datapath_id,
                 :data => message.data,
-                :actions => action2
+                :actions => SendOutPort.new(OFPP_FLOOD)
             )
             puts "Send to Server2 Registration to flow table"
             @flag = 0
+            @mod_ip << message.ipv4_saddr
         end
     end
 end
