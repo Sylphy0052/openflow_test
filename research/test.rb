@@ -12,21 +12,21 @@ class Test < Controller
           actions: SendOutPort.new( OFPP_FLOOD )
         )
         send_flow_mod_add(
-          switchid,
+          datapath_id,
           match: Match.new( dl_type: 0x0800,
                                nw_src: "192.168.3.2" ),
           actions: SendOutPort.new( 1 ),
           priority: 0xfff2
         )
         send_flow_mod_add(
-          switchid,
+          datapath_id,
           match: Match.new( dl_type: 0x0800,
                                nw_src: "192.10.1.10"),
           actions: SendOutPort.new( 3 ),
           priority: 0xfff2
         )
         send_flow_mod_add(
-          switchid,
+          datapath_id,
           match: Match.new( dl_type: 0x0800,
                                nw_src: "192.20.1.10"),
           actions: SendOutPort.new( 4 ),
