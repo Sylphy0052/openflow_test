@@ -11,27 +11,6 @@ class Test < Controller
           match:Match.new( dl_type: 0x0806 ),
           actions: SendOutPort.new( OFPP_FLOOD )
         )
-        send_flow_mod_add(
-          datapath_id,
-          match: Match.new( dl_type: 0x0800,
-                               nw_src: "192.168.3.2" ),
-          actions: SendOutPort.new( 1 ),
-          priority: 0xfff2
-        )
-        send_flow_mod_add(
-          datapath_id,
-          match: Match.new( dl_type: 0x0800,
-                               nw_src: "192.10.1.10"),
-          actions: SendOutPort.new( 3 ),
-          priority: 0xfff2
-        )
-        send_flow_mod_add(
-          datapath_id,
-          match: Match.new( dl_type: 0x0800,
-                               nw_src: "192.20.1.10"),
-          actions: SendOutPort.new( 4 ),
-          priority: 0xfff2
-        )
     end
 
     def packet_in datapath_id, packet_in
@@ -43,6 +22,7 @@ class Test < Controller
 
         if ipsa == "192.10.1.10"
             puts "From 192.10.1.10"
+            puts "Port : #{packet_in.in_port}"
         end
 
         if ipda == "192.10.1.10"
@@ -51,6 +31,7 @@ class Test < Controller
 
         if ipsa == "192.20.1.10"
             puts "From 192.20.1.10"
+            puts "Port : #{packet_in.in_port}"
         end
 
         if ipda == "192.20.1.10"
@@ -59,6 +40,7 @@ class Test < Controller
 
         if ipsa == "192.168.3.2"
             puts "From 192.168.3.2"
+            puts "Port : #{packet_in.in_port}"
         end
 
         if ipda == "192.168.3.2"
