@@ -10,8 +10,8 @@ class Migrate < Controller
         @toip = ARGV[1]
         @flag = 0
         @ipcache = []
-        @pm1_mac = "b8:27:eb:47:8e:ed"
-        @pm2_mac = "b8:27:eb:22:e2:9f"
+        # @pm1_mac = "b8:27:eb:47:8e:ed"
+        # @pm2_mac = "b8:27:eb:22:e2:9f"
         @pm1_ip = "192.10.1.10"
         @pm2_ip = "192.20.1.10"
         @pm1_port = 3
@@ -30,7 +30,6 @@ class Migrate < Controller
 
     end
 
-    # 宛先が192.10.1.10なら負荷分散処理
     def packet_in datapath_id, packet_in
 
         macsa = packet_in.macsa#source_mac_address
@@ -57,7 +56,7 @@ class Migrate < Controller
             puts "Send to Before Migrate PM From #{srcip} to #{dstip}"
 
             action1 = [
-                SetEthDstAddr.new(@pm2_mac),
+                # SetEthDstAddr.new(@pm2_mac),
                 SetIpDstAddr.new( @pm2_ip ),
                 SendOutPort.new( OFPP_FLOOD )
             ]
@@ -84,7 +83,7 @@ class Migrate < Controller
             puts "Send to Client From After Migrate PM From #{srcip} to #{dstip}"
 
             action2 = [
-                SetEthSrcAddr.new( @pm1_mac),
+                # SetEthSrcAddr.new( @pm1_mac),
                 SetIpSrcAddr.new( @pm1_ip ),
                 SendOutPort.new( OFPP_FLOOD )
             ]
