@@ -97,7 +97,7 @@ class Clone < Controller
             )
             send_packet_out(
                 datapath_id,
-                :data => message.data,
+                :data => packet_in.data,
                 :actions => SendOutPort(OFPP_FLOOD)
             )
         end
