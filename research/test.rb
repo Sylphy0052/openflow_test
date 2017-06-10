@@ -31,8 +31,8 @@ class Test < Controller
               datapath_id,
               match: Match.new(
                 dl_type: 0x0800,
-                ip_src: ipsa,
-                ip_dst: ipda ),
+                nw_src: ipsa,
+                nw_dst: ipda ),
               actions: SendOutPort.new( OFPP_FLOOD ),
               priority: 0xfff2
             )
@@ -54,8 +54,8 @@ class Test < Controller
               datapath_id,
               match: Match.new(
                 dl_type: 0x0800,
-                ip_src: ipsa,
-                ip_dst: ipda ),
+                nw_src: ipsa,
+                nw_dst: ipda ),
               actions: SendOutPort.new( OFPP_FLOOD ),
               priority: 0xfff2
             )
@@ -77,8 +77,8 @@ class Test < Controller
               datapath_id,
               match: Match.new(
                 dl_type: 0x0800,
-                ip_src: ipsa,
-                ip_dst: ipda ),
+                nw_src: ipsa,
+                nw_dst: ipda ),
               actions: SendOutPort.new( OFPP_FLOOD ),
               priority: 0xfff2
             )
