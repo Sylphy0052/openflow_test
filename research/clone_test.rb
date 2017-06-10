@@ -32,14 +32,14 @@ class Clone < Controller
             :match => Match.new(
                 :dl_type => 0x0800 ,
                 :nw_src => @pm1_ip ),
-            :actions => SendOutPort.new( @port )
+            :actions => SendOutPort.new( OFPP_FLOOD )
         )
         # 192.20.1.10から来たパケットの転送元を書き換えて1番ポートに転送
         action1 =
         [
             SetEthSrcAddr.new( @pm1_mac ),
             SetIpSrcAddr.new( @pm1_ip ),
-            SendOutPort.new( @port )
+            SendOutPort.new( OFPP_FLOOD )
         ]
         send_flow_mod_add(
             datapath_id,
@@ -99,14 +99,14 @@ class Clone < Controller
                     :dl_type => 0x0800,
                     :nw_src => message.ipv4_saddr
                 ),
-                :actions => SendOutPort.new( @pm1_port ),
+                :actions => SendOutPort.new( OFPP_FLOOD ),
                 :idle_timeout => 300
             )
 
             send_packet_out(
                 datapath_id,
                 :data => message.data,
-                :actions => SendOutPort.new( @pm1_port )
+                :actions => SendOutPort.new( OFPP_FLOOD )
             )
             puts "Send to Server1 Registration to flow table"
             @flag = 1
@@ -115,7 +115,7 @@ class Clone < Controller
             action2 = [
                 SetEthDstAddr.new(@pm2_mac),
                 SetIpDstAddr.new(@pm2_ip),
-                SendOutPort.new(@pm2_port)
+                SendOutPort.new(OFPP_FLOOD)
             ]
             send_flow_mod_add(
                 datapath_id,

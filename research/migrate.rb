@@ -1,8 +1,7 @@
+# -*- coding: utf-8 -*-
 class Migrate < Controller
 
-    ```
-    PM1をPM2にマイグレーションした時，
-    ```
+# Migrate From PM1 to PM2
 
     def start
         puts "trema migrate start."
@@ -77,7 +76,7 @@ class Migrate < Controller
         # マイグレーション前あてのパケットならマイグレーション後に変更
         if dstip == @pm1_ip
             puts ""
-            puts "Arrive packets From #{srcip} to #{dstip}"
+            puts "Send to Before Migrate PM From #{srcip} to #{dstip}"
 
             action1 = [
                 SetIpDstAddr.new( @pm2_ip ),
@@ -88,17 +87,22 @@ class Migrate < Controller
                 datapath_id,
                 :match => Match.new(
                     :dl_type => 0x0800,
-                    :nw_src => message.ipv4_saddr
+                    :nw_src => packet_in.ipv4_saddr
                 ),
                 :actions => action1
             )
 
             send_packet_out(
                 datapath_id,
-                :data => message.data,
+                :data => packet_in.data,
                 :actions => SendOutPort.new( @pm2_port )
             )
+        end
+
         if srcip == @pm2_ip
+            puts ""
+            puts "Send to Client From After Migrate PM From #{srcip} to #{dstip}"
+
             action2 = [
                 SetIpSrcAddr.new( @pm1_ip ),
                 SendOutPort.new( @port )
@@ -115,7 +119,7 @@ class Migrate < Controller
 
             send_packet_out(
                 datapath_id,
-                :data => message.data,
+                :data => packet_in.data,
                 :actions => SendOutPort.new( @port )
             )
         end
