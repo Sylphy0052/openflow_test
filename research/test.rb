@@ -41,6 +41,24 @@ class Test < Controller
         ipsa = packet_in.ipv4_saddr#ipv4_source_address
         ipda = packet_in.ipv4_daddr#ipv4_destination_address
 
+        if srcip == "192.10.1.10"
+            puts "From 192.10.1.10"
+
+        if dstip == "192.10.1.10"
+            puts "To 192.10.1.10"
+
+        if srcip == "192.20.1.10"
+            puts "From 192.20.1.10"
+
+        if dstip == "192.20.1.10"
+            puts "To 192.20.1.10"
+
+        if srcip == "192.168.3.2"
+            puts "From 192.168.3.2"
+
+        if dstip == "192.168.3.2"
+            puts "To 192.168.3.2"
+
         if !ipsa.nil? && "0.0.0.0" != ipsa.to_s then
           puts "----------------------"
           puts "macsa : #{macsa}"
