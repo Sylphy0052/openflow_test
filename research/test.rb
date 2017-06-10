@@ -30,8 +30,13 @@ class Test < Controller
             send_flow_mod_add(
               datapath_id,
               match: Match.new( ip_destination_address: "192.10.1.10" ),
-              actions: SendOutPort.new( 3 ),
+              actions: SendOutPort.new( OFPP_FLOOD ),
               priority: 0xfff2
+            )
+            send_packet_out(
+                datapath_id,
+                data: message.data,
+                actions: SendOutPort.new( OFPP_FLOOD )
             )
         end
 
@@ -45,8 +50,13 @@ class Test < Controller
             send_flow_mod_add(
               datapath_id,
               match: Match.new( ip_destination_address: "192.20.1.10" ),
-              actions: SendOutPort.new( 4 ),
+              actions: SendOutPort.new( OFPP_FLOOD ),
               priority: 0xfff2
+            )
+            send_packet_out(
+                datapath_id,
+                data: message.data,
+                actions: SendOutPort.new( OFPP_FLOOD )
             )
         end
 
@@ -60,8 +70,13 @@ class Test < Controller
             send_flow_mod_add(
               datapath_id,
               match: Match.new( ip_destination_address: "192.168.3.2" ),
-              actions: SendOutPort.new( 1 ),
+              actions: SendOutPort.new( OFPP_FLOOD ),
               priority: 0xfff2
+            )
+            send_packet_out(
+                datapath_id,
+                data: message.data,
+                actions: SendOutPort.new( OFPP_FLOOD )
             )
         end
 
