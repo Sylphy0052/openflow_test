@@ -22,7 +22,7 @@ class Test < Controller
 
         if ipsa == "192.10.1.10"
             puts "From 192.10.1.10"
-            puts "Port : #{packet_in.in_port}"
+            puts "In Port : #{packet_in.in_port}"
         end
 
         if ipda == "192.10.1.10"
@@ -37,7 +37,7 @@ class Test < Controller
 
         if ipsa == "192.20.1.10"
             puts "From 192.20.1.10"
-            puts "Port : #{packet_in.in_port}"
+            puts "In Port : #{packet_in.in_port}"
         end
 
         if ipda == "192.20.1.10"
@@ -52,7 +52,7 @@ class Test < Controller
 
         if ipsa == "192.168.3.2"
             puts "From 192.168.3.2"
-            puts "Port : #{packet_in.in_port}"
+            puts "In Port : #{packet_in.in_port}"
         end
 
         if ipda == "192.168.3.2"
