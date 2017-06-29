@@ -86,9 +86,9 @@ class Clone < Controller
             puts ""
             puts "return ModIp"
             action3 = [
-                SetEthSrcAddr.new(@from_mac),
-                SetIpSrcAddr.new(@from_ip),
-                SendOutPort.new(@port)
+                SetEthSrcAddr.new( @from_mac ),
+                SetIpSrcAddr.new( @from_ip ),
+                SendOutPort.new( @from_port )
             ]
             send_flow_mod_add(
                 datapath_id,
@@ -101,7 +101,7 @@ class Clone < Controller
             send_packet_out(
                 datapath_id,
                 :data => packet_in.data,
-                :actions => SendOutPort.new(@port)
+                :actions => SendOutPort.new( OFPP_FLOOD )
             )
         end
 
@@ -133,7 +133,7 @@ class Clone < Controller
             send_packet_out(
                 datapath_id,
                 :data => message.data,
-                :actions => SendOutPort.new( @from_port )
+                :actions => SendOutPort.new( OFPP_FLOOD )
             )
             puts "Send to Server1 Registration to flow table"
             @flag = 1
@@ -155,7 +155,7 @@ class Clone < Controller
             send_packet_out(
                 datapath_id,
                 :data => message.data,
-                :actions => SendOutPort.new( @to_port )
+                :actions => SendOutPort.new( OFPP_FLOOD )
             )
             puts "Send to Server2 Registration to flow table"
             @flag = 0
