@@ -3,6 +3,8 @@ class Clone < Controller
 
     def start
         if ARGV.size != 2 then
+            puts "#{ARGV.size}"
+            puts "#{ARGV[0]} : #{ARGV[1]}"
             puts("tream run clone.rb from_ip to_ip")
             exit(1)
         end
