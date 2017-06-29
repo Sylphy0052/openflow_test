@@ -75,7 +75,7 @@ class Migrate < Controller
         srcip = packet_in.ipv4_saddr.to_s
         dstip = packet_in.ipv4_daddr.to_s
         # マイグレーション前あてのパケットならマイグレーション後に変更
-        if dstip == @pm1_ip
+        if dstip == @from_ip
             puts ""
             puts "Send to Before Migrate PM From #{srcip} to #{dstip}"
 
@@ -101,7 +101,7 @@ class Migrate < Controller
             )
         end
 
-        if srcip == @pm2_ip
+        if srcip == @to_ip
             puts ""
             puts "Send to Client From After Migrate PM From #{srcip} to #{dstip}"
 
