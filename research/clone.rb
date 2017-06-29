@@ -2,20 +2,25 @@
 class Clone < Controller
 
     def start
+        if ARGV.size != 2 then
+            puts("tream run clone.rb from_ip to_ip")
+            exit(1)
+        end
         puts "trema clone start."
-        # puts "clone from #{ARGV[0]} to #{ARGV[1]}"
-        @fromip = ARGV[0]
-        @toip = ARGV[1]
+        puts "clone from #{ARGV[0]} to #{ARGV[1]}"
+        @from_ip = ARGV[0]
+        @to_ip = ARGV[1]
         @flag = 0
         @ipcache = []
         @mod_ip = []
-        @pm1_mac = "b8:27:eb:47:8e:ed"
-        @pm2_mac = "b8:27:eb:22:e2:9f"
-        @pm1_ip = "192.10.1.10"
-        @pm2_ip = "192.20.1.10"
-        @pm1_port = 3
-        @pm2_port = 4
-        @port = 1
+        @vm_mac = "02:fd:01:de:ad:34"
+        # @pm1_mac = "b8:27:eb:47:8e:ed"
+        # @pm2_mac = "b8:27:eb:22:e2:9f"
+        # @pm1_ip = "192.10.1.10"
+        # @pm2_ip = "192.20.1.10"
+        # @pm1_port = 3
+        # @pm2_port = 4
+        # @port = 1
     end
 
     def switch_ready datapath_id
@@ -32,21 +37,21 @@ class Clone < Controller
             datapath_id,
             :match => Match.new(
                 :dl_type => 0x0800 ,
-                :nw_src => @pm1_ip ),
+                :nw_src => @from_ip ),
             :actions => SendOutPort.new( OFPP_FLOOD )
         )
         # 192.20.1.10から来たパケットの転送元を書き換えて1番ポートに転送
         action1 =
         [
-            SetEthSrcAddr.new( @pm1_mac ),
-            SetIpSrcAddr.new( @pm1_ip ),
+            SetEthSrcAddr.new( @vm_mac ),
+            SetIpSrcAddr.new( @from_ip ),
             SendOutPort.new( OFPP_FLOOD )
         ]
         send_flow_mod_add(
             datapath_id,
             :match => Match.new(
                 :dl_type => 0x0800 ,
-                :nw_dst => @pm2_ip ),
+                :nw_dst => @to_ip ),
             :actions => action1
         )
     end
@@ -72,7 +77,7 @@ class Clone < Controller
 
         srcip = packet_in.ipv4_saddr.to_s
         dstip = packet_in.ipv4_daddr.to_s
-        if dstip == @pm1_ip && !(@ipcache.index( srcip ))
+        if dstip == @from_ip && !(@ipcache.index( srcip ))
             @ipcache << srcip
             puts ""
             puts "Arrive packets From #{srcip} to #{dstip}"
@@ -83,8 +88,8 @@ class Clone < Controller
             puts ""
             puts "return ModIp"
             action3 = [
-                SetEthSrcAddr.new(@pm1_mac),
-                SetIpSrcAddr.new(@pm1_ip),
+                SetEthSrcAddr.new(@vm_mac),
+                SetIpSrcAddr.new(@from_ip),
                 SendOutPort.new(OFPP_FLOOD)
             ]
             send_flow_mod_add(
@@ -137,8 +142,8 @@ class Clone < Controller
 
         else
             action2 = [
-                SetEthDstAddr.new(@pm2_mac),
-                SetIpDstAddr.new(@pm2_ip),
+                SetEthDstAddr.new(@vm_mac),
+                SetIpDstAddr.new(@to_ip),
                 SendOutPort.new(OFPP_FLOOD)
             ]
             send_flow_mod_add(

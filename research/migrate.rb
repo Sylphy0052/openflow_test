@@ -4,19 +4,24 @@ class Migrate < Controller
 # Migrate From PM1 to PM2
 
     def start
+        if ARGV.size != 2 then
+            puts("tream run migrate.rb from_ip to_ip")
+            exit(1)
+        end
         puts "trema migrate start."
-        # puts "clone from #{ARGV[0]} to #{ARGV[1]}"
-        @fromip = ARGV[0]
-        @toip = ARGV[1]
+        puts "clone from #{ARGV[0]} to #{ARGV[1]}"
+        @from_ip = ARGV[0]
+        @to_ip = ARGV[1]
         @flag = 0
         # @ipcache = []
+        @vm_mac = "02:fd:01:de:ad:34"
         # @pm1_mac = "b8:27:eb:47:8e:ed"
         # @pm2_mac = "b8:27:eb:22:e2:9f"
-        @pm1_ip = "192.10.1.10"
-        @pm2_ip = "192.20.1.10"
-        @pm1_port = 3
-        @pm2_port = 4
-        @port = 1
+        # @pm1_ip = "192.10.1.10"
+        # @pm2_ip = "192.20.1.10"
+        # @pm1_port = 2
+        # @pm2_port = 3
+        # @port = 1
     end
 
     def switch_ready datapath_id
@@ -79,8 +84,9 @@ class Migrate < Controller
             puts "Send to Before Migrate PM From #{srcip} to #{dstip}"
 
             action1 = [
-                SetIpDstAddr.new( @pm2_ip ),
-                SendOutPort.new( @pm2_port )
+                SetEthDstAddr.new( @vm_mac ),
+                SetIpDstAddr.new( @to_ip ),
+                SendOutPort.new( OFPP_FLOOD )
             ]
 
             send_flow_mod_add(
@@ -95,7 +101,7 @@ class Migrate < Controller
             send_packet_out(
                 datapath_id,
                 :data => packet_in.data,
-                :actions => SendOutPort.new( @pm2_port )
+                :actions => SendOutPort.new( OFPP_FLOOD )
             )
         end
 
@@ -104,15 +110,16 @@ class Migrate < Controller
             puts "Send to Client From After Migrate PM From #{srcip} to #{dstip}"
 
             action2 = [
-                SetIpSrcAddr.new( @pm1_ip ),
-                SendOutPort.new( @port )
+                SetEthSrcAddr.new( @vm_mac ),
+                SetIpSrcAddr.new( @from_ip ),
+                SendOutPort.new( OFPP_FLOOD )
             ]
 
             send_flow_mod_add(
                 datapath_id,
                 :match => Match.new(
                     :dl_type => 0x0800,
-                    :nw_src => @pm2_ip
+                    :nw_src => @to_ip
                 ),
                 :actions => action2
             )
@@ -120,7 +127,7 @@ class Migrate < Controller
             send_packet_out(
                 datapath_id,
                 :data => packet_in.data,
-                :actions => SendOutPort.new( @port )
+                :actions => SendOutPort.new( OFPP_FLOOD )
             )
         end
     end
