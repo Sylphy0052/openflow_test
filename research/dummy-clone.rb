@@ -36,20 +36,20 @@ class Clone < Controller
             :match => Match.new(
                 :dl_type => 0x0800 ,
                 :nw_src => @from_ip ),
-            :actions => SendOutPort.new( OFPP_FLOOD )
+            :actions => SendOutPort.new( @port )
         )
         # 192.20.1.10から来たパケットの転送元を書き換えて1番ポートに転送
         action1 =
         [
             SetEthSrcAddr.new( @from_mac ),
             SetIpSrcAddr.new( @from_ip ),
-            SendOutPort.new( OFPP_FLOOD )
+            SendOutPort.new( @port )
         ]
         send_flow_mod_add(
             datapath_id,
             :match => Match.new(
                 :dl_type => 0x0800 ,
-                :nw_dst => @to_ip ),
+                :nw_src => @to_ip ),
             :actions => action1
         )
     end
