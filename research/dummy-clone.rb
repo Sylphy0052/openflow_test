@@ -3,6 +3,8 @@ class Clone < Controller
 
     def start
         puts "trema clone start."
+        @server1_ip = "192.168.3.2"
+        @server2_ip = "192.168.3.3"
         @from_ip = "192.10.1.10"
         @to_ip = "192.20.1.10"
         @flag = 0
@@ -61,7 +63,7 @@ class Clone < Controller
         ipda = packet_in.ipv4_daddr#ipv4_destination_address
 
 
-        if !ipsa.nil? && "0.0.0.0" != ipsa.to_s && (ipsa.to_s == @from_ip || ipsa.to_s == @to_ip || ipda.to_s == @from_ip || ipda.to_s == @to_ip)  then
+        if !ipsa.nil? && "0.0.0.0" != ipsa.to_s && (ipsa.to_s == @from_ip || ipsa.to_s == @to_ip || ipsa.to_s == @server1_ip || ipsa.to_s == @server2_ip) && (ipda.to_s == @from_ip || ipda.to_s == @to_ip || ipda.to_s == @server1_ip || ipda.to_s == @server2_ip)  then
           puts "----------------------"
           puts "macsa : #{macsa}"
           puts "macda : #{macda}"
