@@ -16,9 +16,9 @@ class Clone < Controller
         @to_mac = "b8:27:eb:22:e2:9f"
         # @pm1_ip = "192.10.1.10"
         # @pm2_ip = "192.20.1.10"
-        # @pm1_port = 3
-        # @pm2_port = 4
-        # @port = 1
+        @from_port = 2
+        @to_port = 3
+        @port = 1
     end
 
     def switch_ready datapath_id
@@ -36,14 +36,14 @@ class Clone < Controller
             :match => Match.new(
                 :dl_type => 0x0800 ,
                 :nw_src => @from_ip ),
-            :actions => SendOutPort.new( OFPP_FLOOD )
+            :actions => SendOutPort.new( @port )
         )
         # 192.20.1.10から来たパケットの転送元を書き換えて1番ポートに転送
         action1 =
         [
             SetEthSrcAddr.new( @from_mac ),
             SetIpSrcAddr.new( @from_ip ),
-            SendOutPort.new( OFPP_FLOOD )
+            SendOutPort.new( @port )
         ]
         send_flow_mod_add(
             datapath_id,
@@ -88,7 +88,7 @@ class Clone < Controller
             action3 = [
                 SetEthSrcAddr.new(@from_mac),
                 SetIpSrcAddr.new(@from_ip),
-                SendOutPort.new(OFPP_FLOOD)
+                SendOutPort.new(@port)
             ]
             send_flow_mod_add(
                 datapath_id,
@@ -101,7 +101,7 @@ class Clone < Controller
             send_packet_out(
                 datapath_id,
                 :data => packet_in.data,
-                :actions => SendOutPort.new(OFPP_FLOOD)
+                :actions => SendOutPort.new(@port)
             )
         end
 
@@ -127,22 +127,22 @@ class Clone < Controller
                     :dl_type => 0x0800,
                     :nw_src => message.ipv4_saddr
                 ),
-                :actions => SendOutPort.new( OFPP_FLOOD )
+                :actions => SendOutPort.new( @from_port )
             )
 
             send_packet_out(
                 datapath_id,
                 :data => message.data,
-                :actions => SendOutPort.new( OFPP_FLOOD )
+                :actions => SendOutPort.new( @from_port )
             )
             puts "Send to Server1 Registration to flow table"
             @flag = 1
 
         else
             action2 = [
-                SetEthDstAddr.new(@to_mac),
-                SetIpDstAddr.new(@to_ip),
-                SendOutPort.new(OFPP_FLOOD)
+                SetEthDstAddr.new( @to_mac ),
+                SetIpDstAddr.new( @to_ip ),
+                SendOutPort.new( @to_port )
             ]
             send_flow_mod_add(
                 datapath_id,
@@ -155,7 +155,7 @@ class Clone < Controller
             send_packet_out(
                 datapath_id,
                 :data => message.data,
-                :actions => SendOutPort.new(OFPP_FLOOD)
+                :actions => SendOutPort.new( @to_port )
             )
             puts "Send to Server2 Registration to flow table"
             @flag = 0
