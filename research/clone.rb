@@ -2,20 +2,14 @@
 class Clone < Controller
 
     def start
-        if ARGV.size != 2 then
-            puts "#{ARGV.size}"
-            puts "#{ARGV[0]} : #{ARGV[1]}"
-            puts("tream run clone.rb from_ip to_ip")
-            exit(1)
-        end
         puts "trema clone start."
-        puts "clone from #{ARGV[0]} to #{ARGV[1]}"
-        @from_ip = ARGV[0]
-        @to_ip = ARGV[1]
+        @from_ip = "192.10.1.11"
+        @to_ip = "192.20.1.11"
         @flag = 0
         @ipcache = []
         @mod_ip = []
         @vm_mac = "02:fd:01:de:ad:34"
+        puts "clone from #{@from_ip} to #{@to_ip}"
         # @pm1_mac = "b8:27:eb:47:8e:ed"
         # @pm2_mac = "b8:27:eb:22:e2:9f"
         # @pm1_ip = "192.10.1.10"
