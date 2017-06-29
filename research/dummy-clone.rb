@@ -61,7 +61,7 @@ class Clone < Controller
         ipda = packet_in.ipv4_daddr#ipv4_destination_address
 
 
-        if !ipsa.nil? && "0.0.0.0" != ipsa.to_s && (ipsa.to_s == "192.10.1.10")  then
+        if !ipsa.nil? && "0.0.0.0" != ipsa.to_s && (ipsa.to_s == @from_ip || ipsa.to_s == @to_ip || ipda.to_s == @from_ip || ipda.to_s == @to_ip)  then
           puts "----------------------"
           puts "macsa : #{macsa}"
           puts "macda : #{macda}"
