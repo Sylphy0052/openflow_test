@@ -142,7 +142,7 @@ class Clone < Controller
             action2 = [
                 SetEthDstAddr.new( @to_mac ),
                 SetIpDstAddr.new( @to_ip ),
-                SendOutPort.new( @to_port )
+                SendOutPort.new( OFPP_FLOOD )
             ]
             send_flow_mod_add(
                 datapath_id,
